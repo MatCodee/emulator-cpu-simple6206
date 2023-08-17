@@ -1,0 +1,7 @@
+Implementacion de Emulacion CPU
+
+Arquitectura de CPU 6502
+
+- Es una CPU de 8 bits
+- Redireccionan un maximo de 64 kb de memoria a traves de su bus de direcciones 
+de 16 bits.
