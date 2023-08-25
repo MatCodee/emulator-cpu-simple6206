@@ -1,0 +1,6 @@
+Emulacion de una cpu:
+
+- unidad de control
+- unidad artirmetica logica
+
+Debemos implementar estos sistemas apra emular las intrucciones:

@@ -1,7 +1,35 @@
-Implementacion de Emulacion CPU
+Empresa de Marketing:
 
-Arquitectura de CPU 6502
+Servicio: 
+- Generation de Contenido (Coach)
+- TikTok, Instagram?
+- Email Marketing?
+- Posicionamiento SEO?
 
-- Es una CPU de 8 bits
-- Redireccionan un maximo de 64 kb de memoria a traves de su bus de direcciones 
-de 16 bits.
+Nicho: Dentistas 
+Objetivo: (	Transformacionales Digital)
+
+- Que necesito para lograr la transformación Digital:
+* Sistema de Gestión de su empresa con clientes
+* Redes sociales activas (Creacion de contenido, Generar una comunidad) -> Instagram, Tiktok
+* Generar ofertas, irresistibles.
+* Pagina Web hermosa (Web)
+* Posicionamiento SEO (Auditoria)
+
+Generar una plan de Marketing (Plan de Marketing profesional):
+Propuesta unica de valor, oferta irresistible
+
+TODO O NADA -> Logro esos resultados o no te cobro absolutamente nada
+
+
+Resultados: 
+Que gana el cliente o que obtiene con este servicio de transformación digital.
+- Aumentar clientes en un 20%?
+- Aumentar en posicionamiento de Marca?
+
+Que es lo que quiere el Cliente?
+* Aumentar la cantidad de personas que van al dentista.
+
+
+
+
