@@ -18,7 +18,7 @@ class Memory {
             std::fill(Data.begin(),Data.end(),0);
         }
         //std::vector<Byte> getData() { return Data; }
-        Byte operator[](u32 address) const {
+        Byte& operator[](u32 address) {
             return Data[address];
         }
     private:

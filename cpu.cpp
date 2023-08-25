@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include "opcode.h"
 
 void CPU::reset(Memory &memory) {
     programCounter = 0xFFFC;
@@ -16,17 +17,23 @@ Byte CPU::fetchByte(u32 cycles, Memory &memory) {
     return Data;
 }
 
-static constexpr Byte INS_LDA_IM = 0xA9;
 
 void CPU::execute(u32 cycles,Memory &memory) {
     while( cycles > 0 ) {
         Byte ins = fetchByte( cycles, memory);
+
+        std::cout << "Instruccion" << std::endl;
+        std::cout << ins << std::endl;
+        
         switch (ins) {
             case INS_LDA_IM: {
                 Byte value = fetchByte(cycles, memory);
                 A = value;
                 zf = (A == 0);
                 nf = (A == 0b10000000) > 0;
+                std::cout << "Entrando a la instruccion: " << std::endl;
+                std::cout << "Cargando memoria en el acumulador: " << A << std::endl;
+                std::cout << "Modificando las flags: zerp flags " << zf << ", negative flags " << nf << std::endl;
                 break;
             }
             default:

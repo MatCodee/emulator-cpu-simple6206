@@ -12,9 +12,10 @@ class CPU {
         Byte fetchByte(u32 cycles,Memory &memory);
     private:
         bool act;
-        Word programCounter;
-        Byte stackPointer;
-        Byte A,X,Y;
+        Word programCounter; // almacena la sigueinte idreccion
+        Byte stackPointer; 
+        Byte A,X,Y; // Acumlador puede almacenar operacioes a excepcione de incrementos o decrementos
+        
         // Status flags
         Byte cf : 1;
         Byte zf : 1;
