@@ -9,7 +9,11 @@ class CPU {
     public:
         void reset(Memory &memory);
         void execute(u32 cycles,Memory &memory);
-        Byte fetchByte(u32 cycles,Memory &memory);
+
+        Byte fetchByte(u32 &cycles, Memory &memory);
+        Byte readByte(u32 &cycles, Byte address, Memory &memory);
+
+        void LDASetStatus();
     private:
         bool act;
         Word programCounter; // almacena la sigueinte idreccion

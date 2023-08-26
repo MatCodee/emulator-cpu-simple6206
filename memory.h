@@ -18,6 +18,12 @@ class Memory {
             std::fill(Data.begin(),Data.end(),0);
         }
         std::vector<Byte> getData() { return Data; }
+
+        /* Lee un byte */
+        Byte operator[](u32 address) const {
+            return Data[address];
+        }
+        /* Esribe un 1 byte */
         Byte& operator[](u32 address) {
             return Data[address];
         }

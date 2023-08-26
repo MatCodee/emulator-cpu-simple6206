@@ -10,7 +10,7 @@ void CPU::reset(Memory &memory) {
     memory.Initialise();
 }
 
-Byte CPU::fetchByte(u32 cycles, Memory &memory) {
+Byte CPU::fetchByte(u32 &cycles, Memory &memory) {
     //Byte Data = memory.getData()[programCounter];
     Byte Data = memory[programCounter];
     programCounter++;
@@ -18,23 +18,31 @@ Byte CPU::fetchByte(u32 cycles, Memory &memory) {
     return Data;
 }
 
+Byte CPU::readByte(u32 &cycles,Byte address, Memory& memory) {
+    Byte Data = memory[address];
+    cycles--;
+    return Data;
+}
+
+void CPU::LDASetStatus() {
+    zf = (A == 0);
+    nf = (A == 0b10000000) > 0;
+}
 
 void CPU::execute(u32 cycles,Memory &memory) {
     while( cycles > 0 ) {
-        Byte ins = fetchByte( cycles, memory);
-
-        std::cout << "Instruccion" << std::endl;
-        std::cout << ins << std::endl;
-        
+        Byte ins = fetchByte( cycles, memory);        
         switch (ins) {
             case INS_LDA_IM: {
                 Byte value = fetchByte(cycles, memory);
                 A = value;
-                zf = (A == 0);
-                nf = (A == 0b10000000) > 0;
-                std::cout << "Entrando a la instruccion: " << std::endl;
-                std::cout << "Cargando memoria en el acumulador: " << A << std::endl;
-                std::cout << "Modificando las flags: zerp flags " << zf << ", negative flags " << nf << std::endl;
+                LDASetStatus();
+                break;
+            }
+            case INS_LDA_ZP: {
+                Byte zeroPageAddress = fetchByte(cycles, memory);
+                A = readByte( cycles, zeroPageAddress, memory);
+                LDASetStatus();
                 break;
             }
             case INS_LDX_IM: {
