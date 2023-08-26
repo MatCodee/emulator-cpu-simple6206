@@ -4,3 +4,5 @@ Emulacion de una cpu:
 - unidad artirmetica logica
 
 Debemos implementar estos sistemas apra emular las intrucciones:
+ALU: reliazar los calculos logicos aritmetos
+CU: 

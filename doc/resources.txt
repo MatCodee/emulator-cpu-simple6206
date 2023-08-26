@@ -1,0 +1,8 @@
+https://github.com/davepoo/6502Emulator/tree/master
+https://github.com/gianlucag/mos6502
+
+
+http://6502.org/users/obelisk/6502/registers.html
+https://www.cpu-world.com/Arch/650x.html
+https://www.c64-wiki.com/wiki/Reset_(Process)
+http://www.6502.org/users/andre/65k/af65002/af65002arch.html#core
