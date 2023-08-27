@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "cpu.h"
 #include "opcode.h"
 
@@ -18,7 +19,17 @@ Byte CPU::fetchByte(u32 &cycles, Memory &memory) {
     return Data;
 }
 
-Byte CPU::readByte(u32 &cycles,Byte address, Memory& memory) {
+
+Byte CPU::writeByteMemory(u32 &cycle,const Byte &address,const Byte &value, Memory& memory) {
+    if(memory[address] == 0) {
+        memory[address] = value;
+        cycle--;
+    } else {
+        // Generar un error
+    }
+}
+
+Byte CPU::readByte(u32 &cycles,const Byte &address, Memory& memory) {
     Byte Data = memory[address];
     cycles--;
     return Data;
@@ -29,10 +40,16 @@ void CPU::LDASetStatus() {
     nf = (A == 0b10000000) > 0;
 }
 
+void CPU::LDXSetStatusFlags() {
+    zf = (X == 0);
+    nf = (X == 0b10000000) > 0;
+}
+
 void CPU::execute(u32 cycles,Memory &memory) {
     while( cycles > 0 ) {
         Byte ins = fetchByte( cycles, memory);        
         switch (ins) {
+            // Estableciendo distintos modos de acceso para el LDA
             case INS_LDA_IM: {
                 Byte value = fetchByte(cycles, memory);
                 A = value;
@@ -45,20 +62,24 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 LDASetStatus();
                 break;
             }
+
+
+            // Estableciendo distintas direccciones de modod de acceso para el LDX
             case INS_LDX_IM: {
                 Byte value = fetchByte(cycles, memory);
                 X = value;
-                zf = (X == 0);
-                nf = (X == 0b10000000) > 0;
+                LDXSetStatusFlags();
                 break;
             }
+
             case INS_LDY_IM: {
                 Byte value = fetchByte(cycles, memory);
                 Y = value;
-                zf = (X == 0);
-                nf = (X == 0b10000000) > 0;
+                LDXSetStatusFlags();
+                break;
             }
-            case INS_STA_IM: {
+
+            case INS_STA_ZP: {
                 // TODO: Comprobar si tienen un acumulador
                 Byte acumulator_data = A; 
                 for (size_t i = 0; i < memory.getData().size(); i++) {
@@ -73,4 +94,11 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 break;
         }
     }
+}
+
+
+void CPU::PrintStatus() const
+{
+	printf( "A: %d X: %d Y: %d\n", A, X, Y );
+	printf( "PC: %d SP: %d\n", programCounter, stackPointer);
 }

@@ -11,9 +11,15 @@ class CPU {
         void execute(u32 cycles,Memory &memory);
 
         Byte fetchByte(u32 &cycles, Memory &memory);
-        Byte readByte(u32 &cycles, Byte address, Memory &memory);
+        Byte readByte(u32 &cycles,const Byte &address, Memory &memory);
+        Byte writeByteMemory(u32 &cycles, const Byte &address,const Byte &value, Memory &memory);
 
-        void LDASetStatus();
+
+        
+        void LDASetStatus(); // Establece los estados para un Instruccion LDA
+        void LDXSetStatusFlags();
+    
+        void PrintStatus() const;
     private:
         bool act;
         Word programCounter; // almacena la sigueinte idreccion
