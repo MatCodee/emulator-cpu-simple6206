@@ -6,8 +6,26 @@ Tengo una carpeta de paginas en donde estan los recursos de este proyecto.
 Si esta haciendo este mismo proyecto hay muchos codigos en github de este mismo proyectoi completos y de muy buena calidad, puede ver en la carpeta DOC
 
 Para correr este proyecto:
-```console
+```
 ./compile.sh
 ./run.sh
 ```
+Correr de forma manual
+```
+mkdir build
+cd build
+cmake ..
+```
+En linux:
+```
+make
+./main
+```
+En Windows, tener el compilador o agregar visual estudio comunity
+```
+cmake --build .
+cd Debug
+./main
+```
+
 No necesita librerias externas ya que es un codigo simple 
