@@ -11,22 +11,23 @@ class CPU {
         void execute(u32 cycles,Memory &memory);
 
         Byte fetchByte(u32 &cycles, Memory &memory);
-        Byte readByte(u32 &cycles,const Byte &address, Memory &memory);
-        Byte writeByteMemory(u32 &cycles, const Byte &address,const Byte &value, Memory &memory);
-
-
+        Word fetchWord(u32 &cycles, Memory &memory);
+        Byte readByte(u32 &cycles,const Byte &address,const Memory &memory);
+        void writeByte(const Byte &value,u32 &cycles, const Byte &address, Memory &memory);
         
+        void writeByteMemory(u32 &cycles, const Byte &address,const Byte &value, Memory &memory);
+
         void LDASetStatus(); // Establece los estados para un Instruccion LDA
         void LDXSetStatusFlags();
     
         void PrintStatus() const;
     private:
         bool act;
-        Word programCounter; // almacena la sigueinte idreccion
-        Byte stackPointer; 
+        Word programCounter; // almacena la sigueinte direccion
+        Byte stackPointer;  
         Byte A,X,Y; // Acumlador puede almacenar operacioes a excepcione de incrementos o decrementos
         
-        // Status flags
+        // Status flags 
         Byte cf : 1;
         Byte zf : 1;
         Byte id : 1;

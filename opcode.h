@@ -5,31 +5,31 @@ using Byte = unsigned char;
 
 static constexpr Byte
     // LDA
-    INS_LDA_IM = 0xA9,
-    INS_LDA_ZP = 0xA5,
-    INS_LDA_ZPX = 0xB5,
-    INS_LDA_ABS = 0xAD,
+    INS_LDA_IM = 0xA9,      // DONE
+    INS_LDA_ZP = 0xA5,      // DONE
+    INS_LDA_ZPX = 0xB5,     // DONE
+    INS_LDA_ABS = 0xAD,     
     INS_LDA_ABSX = 0xBD,
     INS_LDA_ABSY = 0xB9,
     INS_LDA_INDX = 0xA1,
     INS_LDA_INDY = 0xB1,
 
     // LDX
-    INS_LDX_IM = 0xA2,
+    INS_LDX_IM = 0xA2,      // LDX_IM
     INS_LDX_ZP = 0xA6,
     INS_LDX_ZPY = 0xB6,
     INS_LDX_ABS = 0xAE,
     INS_LDX_ABSY = 0xBE,
     
     // LDY
-    INS_LDY_IM = 0xA0,
+    INS_LDY_IM = 0xA0,      // DONE
     INS_LDY_ZP = 0xA4,
     INS_LDY_ZPX = 0xB4,
     INS_LDY_ABS = 0xAC,
     INS_LDY_ABSX = 0xBC,
     
     // STA
-    INS_STA_ZP = 0x85,
+    INS_STA_ZP = 0x85,      // STA_ZP
     INS_STA_ZPX = 0x95,
     INS_STA_ABS = 0x8D,
     INS_STA_ABSX = 0x9D,
@@ -38,16 +38,16 @@ static constexpr Byte
     INS_STA_INDY = 0x91,
     
     // STX
-    INS_STX_ZP = 0x86,
+    INS_STX_ZP = 0x86,      // STX_ZP
     INS_STX_ZPY = 0x96,
     INS_STX_ABS = 0x8E,
     
     // STY
-    INS_STY_ZP = 0x84,
+    INS_STY_ZP = 0x84,      // STY_ZP
     INS_STY_ZPX = 0x94,
     INS_STY_ABS = 0x8C,
 
-    INS_TSX = 0xBA,
+    INS_TSX = 0xBA,         
     INS_TXS = 0x9A,
     INS_PHA = 0x48,
     INS_PLA = 0x68,
@@ -58,6 +58,9 @@ static constexpr Byte
     INS_JMP_IND = 0x6C,
     INS_JSR = 0x20,
     INS_RTS = 0x60,
+
+
+
 
     // Logical Ops
 

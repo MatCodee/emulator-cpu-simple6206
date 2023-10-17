@@ -5,7 +5,6 @@ build_dir="$current_dir/build"
 if [ -d "$build_dir" ]; then
     # La carpeta build ya existe, entrar a ella
     cd "$build_dir"
-    cd Debug
 
     if [ -f main.exe ]; then
         ./main.exe  # Cambia esto a main.exe
