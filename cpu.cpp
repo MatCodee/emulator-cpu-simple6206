@@ -83,6 +83,8 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 A = value;
                 LDASetStatus();
             } break;
+
+            // Aqui hago una comprobacion de lectura
             case INS_LDA_ZP: {
                 Byte zeroPageAddress = fetchByte(cycles, memory);
                 A = readByte( cycles, zeroPageAddress, memory);
@@ -120,13 +122,31 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 Word address = zeroPageAddress;
                 writeByte(A, cycles, address, memory);
             } break;
-
             case INS_STX_ZP: {
-
+                Byte zeroPageAddress = fetchByte(cycles, memory);
+                Word address = zeroPageAddress
+                writeByte(X, cycles, address, memory)
             } break;
-            case INS_STY_ZP: {
-
+            case INS_STX_ZPY: {
+                Byte zeroPageAddress = fetchByte(cycles, memory);
+                Word address = zeroPageAddress
+                writeByte(Y, cycles, address, memory)
             } break;
+
+
+            case INS_TSX: {
+                X = stackPointer
+                // Implementar la Flags aqui de la instruccion TSX
+            } break;
+            case INS_TXA: {
+                A = X;
+            } break;
+            case INS_PHA: {
+                Byte value = A
+                memoria.PushMemory(value);
+            } break;
+
+
             /*
             // No se is esta implementacion esta correcta
             case INS_JSR: {

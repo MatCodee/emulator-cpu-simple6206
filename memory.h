@@ -14,19 +14,15 @@ using u32 = unsigned int;
 class Memory {
     public:
         Memory() : Data(MAX_MEM,0) {}
-        void Initialise() {
-            std::fill(Data.begin(),Data.end(),0);
-        }
-        std::vector<Byte> getData() { return Data; }
+        void Initialise();
 
-        /* Lee un byte */
-        Byte operator[](u32 address) const {
-            return Data[address];
-        }
-        /* Esribe un 1 byte */
-        Byte& operator[](u32 address) {
-            return Data[address];
-        }
+        std::vector<Byte> getData();
+        // Operaciones
+        void PushMemory(const Byte &value);
+        
+        // Operadores
+        Byte operator[](u32 address) const;
+        Byte& operator[](u32 address);
     private:
         static constexpr u32 MAX_MEM = 1024 * 64; 
         std::vector<Byte> Data;
