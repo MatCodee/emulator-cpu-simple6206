@@ -52,7 +52,7 @@ static constexpr Byte
 
     INS_TSX = 0xBA,         // DONE T       
     INS_TXS = 0x9A,         // DONE T
-    INS_PHA = 0x48,
+    INS_PHA = 0x48,         
     INS_PLA = 0x68,
     INS_PHP = 0x08,
     INS_PLP = 0x28,

@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Directorio actual
+
+cd ..
 current_dir=$(pwd)
 
 # Ruta al directorio build
@@ -23,3 +25,7 @@ cmake ..
 cmake --build .
 
 cd "$current_dir"
+
+
+echo "Presiona Enter para continuar..."
+read pausa

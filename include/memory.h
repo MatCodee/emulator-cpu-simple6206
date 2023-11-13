@@ -3,6 +3,7 @@
 #define MEMORY_H
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
 
 using Byte = unsigned char;
@@ -18,11 +19,14 @@ class Memory {
 
         std::vector<Byte> getData();
         // Operaciones
-        void PushMemory(const Byte &value);
+        void PushMemory(const Byte &value,Byte &stackPointer);
         
         // Operadores
         Byte operator[](u32 address) const;
         Byte& operator[](u32 address);
+
+
+        void printMemory() const;
     private:
         static constexpr u32 MAX_MEM = 1024 * 64; 
         std::vector<Byte> Data;

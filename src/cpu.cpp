@@ -12,6 +12,12 @@ void CPU::reset(Memory &memory) {
     memory.Initialise();
 }
 
+
+void CPU::PrintStatus() const {
+	printf( "A: %d X: %d Y: %d\n", A, X, Y );
+	printf( "PC: %d SP: %d\n", programCounter, stackPointer);
+}
+
 Byte CPU::fetchByte(u32 &cycles, Memory &memory) {
     //Byte Data = memory.getData()[programCounter];
     Byte Data = memory[programCounter];
@@ -71,6 +77,11 @@ void CPU::LDXSetStatusFlags() {
     zf = (X == 0);
     nf = (X == 0b10000000) > 0;
 }
+void CPU::TSXSetStatusFlag() {
+    zf = (X == 0);
+    nf = (X & 0x80) != 0;
+}
+
 
 void CPU::execute(u32 cycles,Memory &memory) {
     while( cycles > 0 ) {
@@ -82,6 +93,8 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 Byte value = fetchByte(cycles, memory);
                 A = value;
                 LDASetStatus();
+                PrintStatus();
+                memory.printMemory();
             } break;
 
             // Aqui hago una comprobacion de lectura
@@ -89,6 +102,8 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 Byte zeroPageAddress = fetchByte(cycles, memory);
                 A = readByte( cycles, zeroPageAddress, memory);
                 LDASetStatus();
+                PrintStatus();
+                //memory.printMemory();
             } break;
             
             // No entiendo muy bien esta operacion REPASAR en el futuro
@@ -124,26 +139,33 @@ void CPU::execute(u32 cycles,Memory &memory) {
             } break;
             case INS_STX_ZP: {
                 Byte zeroPageAddress = fetchByte(cycles, memory);
-                Word address = zeroPageAddress
-                writeByte(X, cycles, address, memory)
+                Word address = zeroPageAddress;
+                writeByte(X, cycles, address, memory);
             } break;
             case INS_STX_ZPY: {
                 Byte zeroPageAddress = fetchByte(cycles, memory);
-                Word address = zeroPageAddress
-                writeByte(Y, cycles, address, memory)
+                Word address = zeroPageAddress;
+                writeByte(Y, cycles, address, memory);
             } break;
 
 
             case INS_TSX: {
-                X = stackPointer
-                // Implementar la Flags aqui de la instruccion TSX
+                X = stackPointer;
+                TSXSetStatusFlag();
             } break;
             case INS_TXA: {
                 A = X;
             } break;
+
             case INS_PHA: {
-                Byte value = A
-                memoria.PushMemory(value);
+                std::cout << "NUEVA INSTRUCCIONs" << std::endl;
+                Byte value = A;
+                stackPointer--;
+                //memory.PushMemory(value,stackPointer);
+                //PrintStatus();
+                std::cout << "Mostrando la informacion de la memoria" << std::endl;
+                memory.printMemory();
+                
             } break;
 
 
@@ -165,7 +187,3 @@ void CPU::execute(u32 cycles,Memory &memory) {
     }
 }
 
-void CPU::PrintStatus() const {
-	printf( "A: %d X: %d Y: %d\n", A, X, Y );
-	printf( "PC: %d SP: %d\n", programCounter, stackPointer);
-}

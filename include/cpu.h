@@ -19,12 +19,14 @@ class CPU {
 
         void LDASetStatus(); // Establece los estados para un Instruccion LDA
         void LDXSetStatusFlags();
-    
+        void TSXSetStatusFlag();
+
+            
         void PrintStatus() const;
     private:
         bool act;
         Word programCounter; // almacena la sigueinte direccion
-        Byte stackPointer;  
+        Byte stackPointer;
         Byte A,X,Y; // Acumlador puede almacenar operacioes a excepcione de incrementos o decrementos
         
         // Status flags 
