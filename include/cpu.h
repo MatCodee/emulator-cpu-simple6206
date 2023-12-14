@@ -2,8 +2,8 @@
 #define CPU_H
 #include "memory.h"
 
-using Byte = unsigned char;
-using Word = unsigned short;
+using Byte = unsigned char; // 1 byte -> 8 bits
+using Word = unsigned short; // 2 byte -> 16 bits
 
 class CPU {
     public:
@@ -17,17 +17,24 @@ class CPU {
         
         void writeByteMemory(u32 &cycles, const Byte &address,const Byte &value, Memory &memory);
 
+        // Flags
         void LDASetStatus(); // Establece los estados para un Instruccion LDA
         void LDXSetStatusFlags();
         void TSXSetStatusFlag();
+        void TAXSetStatusFlag();
+        void TAYSetStatusFlag();
+        void TXASetStatusFlag();
+        void SetZeroAndNegativeFlags(Byte &reg);
 
-            
+
         void PrintStatus() const;
     private:
         bool act;
         Word programCounter; // almacena la sigueinte direccion
         Byte stackPointer;
         Byte A,X,Y; // Acumlador puede almacenar operacioes a excepcione de incrementos o decrementos
+
+        bool carryFlag = false;
         
         // Status flags 
         Byte cf : 1;

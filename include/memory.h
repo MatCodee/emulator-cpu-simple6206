@@ -6,13 +6,9 @@
 #include <iomanip>
 #include <vector>
 
-using Byte = unsigned char;
-using Word = unsigned short;
+#include "types.h"
 
-using u32 = unsigned int;
-
-
-class Memory {
+class Emulator6502::Memory {
     public:
         Memory() : Data(MAX_MEM,0) {}
         void Initialise();

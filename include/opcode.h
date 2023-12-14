@@ -59,7 +59,7 @@ static constexpr Byte
 
     INS_JMP_ABS = 0x4C,
     INS_JMP_IND = 0x6C,
-    INS_JSR = 0x20,
+    INS_JSR = 0x20,         // DONE
     INS_RTS = 0x60,
 
 
@@ -101,22 +101,22 @@ static constexpr Byte
     INS_BIT_ZP = 0x24,
     INS_BIT_ABS = 0x2C,
 
-    // Transfer Registers
-    INS_TAX = 0xAA,
-    INS_TAY = 0xA8,
-    INS_TXA = 0x8A,
-    INS_TYA = 0x98,
+    // Transfer Registers 
+    INS_TAX = 0xAA, // DONE T
+    INS_TAY = 0xA8, // DONE T
+    INS_TXA = 0x8A, // DONE T
+    INS_TYA = 0x98, // DONE T
 
     // Increments, Decrements
-    INS_INX = 0xE8,
-    INS_INY = 0xC8,
-    INS_DEY = 0x88,
-    INS_DEX = 0xCA,
-    INS_DEC_ZP = 0xC6,
+    INS_INX = 0xE8,         // DONDE T
+    INS_INY = 0xC8,         // DONE T
+    INS_DEY = 0x88,         // DONDE T
+    INS_DEX = 0xCA,         // DONDE T
+    INS_DEC_ZP = 0xC6,      // DONE T
     INS_DEC_ZPX = 0xD6,
     INS_DEC_ABS = 0xCE,
     INS_DEC_ABSX = 0xDE,
-    INS_INC_ZP = 0xE6,
+    INS_INC_ZP = 0xE6,      // DONE T
     INS_INC_ZPX = 0xF6,
     INS_INC_ABS = 0xEE,
     INS_INC_ABSX = 0xFE,

@@ -12,7 +12,6 @@ void CPU::reset(Memory &memory) {
     memory.Initialise();
 }
 
-
 void CPU::PrintStatus() const {
 	printf( "A: %d X: %d Y: %d\n", A, X, Y );
 	printf( "PC: %d SP: %d\n", programCounter, stackPointer);
@@ -26,16 +25,16 @@ Byte CPU::fetchByte(u32 &cycles, Memory &memory) {
     return Data;
 }
 
+// Analizar la informacion de este contenido no entiendo este proceso de fetchWord
 Word CPU::fetchWord(u32 &cycles, Memory &memory) {
     Word data = memory[programCounter];
-    programCounter++;
 
-    data = (memory[programCounter] );
+    programCounter++;
+    data |= (memory[programCounter] << 8);
     programCounter++;
     cycles+=2;
     return data;
 }
-
 
 void CPU::writeByteMemory(u32 &cycle,const Byte &address,const Byte &value, Memory& memory) {
     if(memory[address] == 0) {
@@ -51,7 +50,6 @@ Byte CPU::readByte(u32 &cycles,const Byte &address,const Memory& memory) {
     cycles--;
     return Data;
 }
-
 
 void CPU::writeByte(const Byte &value,u32 &cycles, const Byte &address, Memory &memory) {
     memory[address] = value; 
@@ -72,7 +70,6 @@ void CPU::LDASetStatus() {
     zf = (A == 0);
     nf = (A == 0b10000000) > 0;
 }
-
 void CPU::LDXSetStatusFlags() {
     zf = (X == 0);
     nf = (X == 0b10000000) > 0;
@@ -81,13 +78,30 @@ void CPU::TSXSetStatusFlag() {
     zf = (X == 0);
     nf = (X & 0x80) != 0;
 }
+void CPU::TAXSetStatusFlag() {
+    zf = (X == 0);
+    nf = (X & 0x80) != 0;
+}
+void CPU::TAYSetStatusFlag() {
+    zf = (X == 0);
+    nf = (X & 0x80) != 0;
+}
+void CPU::TXASetStatusFlag() {
+    zf = (A == 0);
+    nf = (X & 0x80) != 0;
+}
 
+// Estatus flag para incrementos y decrementos  en las instrucciones
+void CPU::SetZeroAndNegativeFlags(Byte &reg) {
+    zf = (reg == 0);
+    nf = (reg & 0x80) != 0;
+}
 
 void CPU::execute(u32 cycles,Memory &memory) {
     while( cycles > 0 ) {
         Byte ins = fetchByte( cycles, memory);        
         switch (ins) {
-            // LDA
+            // LOAD/ STORE OPERATIONS
             // Estableciendo distintos modos de acceso para el LDA
             case INS_LDA_IM: {
                 Byte value = fetchByte(cycles, memory);
@@ -105,8 +119,7 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 PrintStatus();
                 //memory.printMemory();
             } break;
-            
-            // No entiendo muy bien esta operacion REPASAR en el futuro
+ 
             case INS_LDA_ZPX: {
                 Byte zeroPageAddressX = fetchByte(cycles, memory);
                 zeroPageAddressX += X;
@@ -142,44 +155,188 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 Word address = zeroPageAddress;
                 writeByte(X, cycles, address, memory);
             } break;
-            case INS_STX_ZPY: {
+
+            // TODO: Comprobar si esta instruccion esta correcta
+            case INS_STY_ZP: {
                 Byte zeroPageAddress = fetchByte(cycles, memory);
                 Word address = zeroPageAddress;
                 writeByte(Y, cycles, address, memory);
             } break;
 
+            // REGISTER TRANSFERS
+            case INS_TAX: {
+                X = A;
+                cycles--;
+                TAXSetStatusFlag();
 
+            } break;
+            case INS_TAY: {
+                Y = A;
+                cycles--;
+                TAYSetStatusFlag();
+            } break;
+            case INS_TXA: {
+                A = X;
+                cycles--;
+                TXASetStatusFlag();
+            } break;
+            case INS_TYA: {
+                A = Y;
+                cycles--;
+                TXASetStatusFlag();
+            } break;
+
+            // STACK OPERATIONS
             case INS_TSX: {
                 X = stackPointer;
                 TSXSetStatusFlag();
             } break;
-            case INS_TXA: {
-                A = X;
+            case INS_TXS: {
+                stackPointer = X;
             } break;
 
             case INS_PHA: {
-                std::cout << "NUEVA INSTRUCCIONs" << std::endl;
                 Byte value = A;
                 stackPointer--;
-                //memory.PushMemory(value,stackPointer);
-                //PrintStatus();
-                std::cout << "Mostrando la informacion de la memoria" << std::endl;
-                memory.printMemory();
+                memory.PushMemory(value,stackPointer);
+                PrintStatus();
+                memory.printMemory();                
+            } break;
+
+            
+            // LOGICAL
+
+            case INS_AND_IM: {
+                Byte value = fetchByte(cycles, memory);
+                A &= value;
+                cycles--; //  ver si es necesario restar el cycle
+                SetZeroAndNegativeFlags(A);
+            } break;
+            case INS_EOR_IM: {
+                Byte value = fetchByte(cycles, memory);
+                // XOR
+                A = A ^ value; 
+                cycles--; //  ver si es necesario restar el cycle
+                SetZeroAndNegativeFlags(A);
+            } break;
+            case INS_ORA_IM: {
+                Byte value = fetchByte(cycles, memory);
+                A |= value;
+                cycles--; //  ver si es necesario restar el cycle
+                SetZeroAndNegativeFlags(A);
+            } break;
+            case INS_BIT_ZP: {
+                //Word address = fetchByte(cycles, memory);
+                // TODO: VER COMO FUNCIONA BIEN ESTA INSTRUCCION
+            } break;
+
+            // Arithmetic
+            case INS_ADC: {    
+                Byte value = fetchByte(cycles, memory);
                 
+                
+                Word result = A + value + (carryFlag ? 1 : 0);
+
+                // Manejo de Excepciones aqui de INS ADC
+
+                A = result;
+                carryFlag = result > 0xFF;
+                cycles--;
+            } break;
+            case INS_SBC: {
+                Byte value = fetchByte(cycles, memory);
+                Word result = A - value - (carryFlag ? 1 : 0); // no se si esta implementacion esta correcta
+                carryFlag = result > 0xFF;
+                cycles--;
+
+            } break;
+            case INS_CMP: {
+                // compare A with memory value
+                Byte value = fetchByte(cycles, memory);
+                Byte compare = value & A; // No se si esta implementacion esta correcta
+                carryFlag = result > 0xFF;
+                cycles--;
+            } break;
+            case INS_CPX: {
+
+            } break;
+            case INS_CPY: {
+
+            } break;
+
+            // Increments & Decrements
+
+            case INS_INC_ZP: {
+                Word address = fetchByte(cycles, memory);
+                Byte value = readByte(cycles, address, memory);
+                value++;
+                cycles--;
+                writeByte(value, cycles, address, memory);
+                // Flags
+                SetZeroAndNegativeFlags(value);
+                // Set Status flag
+            } break;
+            case INS_INX: {
+                X++;
+                cycles--;
+                SetZeroAndNegativeFlags(X);
+            } break;
+            case INS_INY: {
+                Y++;
+                cycles--;
+                SetZeroAndNegativeFlags(Y);
+            } break;
+            case INS_DEC_ZP: {
+                Word address = fetchByte(cycles, memory);
+                Byte value = readByte(cycles, address, memory);
+                value--;
+                cycles--;
+                writeByte(value, cycles, address, memory);
+                SetZeroAndNegativeFlags(value);
+                // Set Status flag
+            } break;
+            case INS_DEX: {
+                X--;
+                cycles--;
+                SetZeroAndNegativeFlags(X);
+            } break;
+            case INS_DEY: {
+                Y--;
+                cycles--;
+                SetZeroAndNegativeFlags(Y);
             } break;
 
 
+            // Shifts
+            
+            //Jumps & Calls
+
             /*
+            case INS_RTS: {
+                programCounter = memory[programCounter - 1];
+                // Quitar el ultimo elemento de la direccion 
+            
+            } break;
+            */
             // No se is esta implementacion esta correcta
+            //
             case INS_JSR: {
                 Word subAddress = fetchWord(cycles, memory);
+
                 memory[stackPointer] = stackPointer - 1;
                 stackPointer++;
                 cycles--;
                 programCounter = subAddress;
                 cycles--;
             } break;
-            */
+
+            // Branches
+            
+            // Status Flag Changes
+            
+            // System Functions
+
+
             default:
                 std::cerr << "Instruction not handled: " << ins << std::endl;
                 break;
