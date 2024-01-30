@@ -2,7 +2,6 @@
 #include "cpu.h"
 #include "opcode.h"
 
-
 void CPU::reset(Memory &memory) {
     programCounter = 0xFFFC;
     stackPointer = 0x0100;
@@ -11,6 +10,7 @@ void CPU::reset(Memory &memory) {
     A = X = Y = 0;
     memory.Initialise();
 }
+
 
 void CPU::PrintStatus() const {
 	printf( "A: %d X: %d Y: %d\n", A, X, Y );
@@ -252,10 +252,12 @@ void CPU::execute(u32 cycles,Memory &memory) {
             } break;
             case INS_CMP: {
                 // compare A with memory value
+                /*
                 Byte value = fetchByte(cycles, memory);
                 Byte compare = value & A; // No se si esta implementacion esta correcta
                 carryFlag = result > 0xFF;
                 cycles--;
+                */
             } break;
             case INS_CPX: {
 

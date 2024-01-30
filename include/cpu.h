@@ -2,10 +2,9 @@
 #define CPU_H
 #include "memory.h"
 
-using Byte = unsigned char; // 1 byte -> 8 bits
-using Word = unsigned short; // 2 byte -> 16 bits
+using namespace Emulator6502;
 
-class CPU {
+class Emulator6502::CPU {
     public:
         void reset(Memory &memory);
         void execute(u32 cycles,Memory &memory);

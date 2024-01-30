@@ -10,6 +10,7 @@ namespace Emulator6502 {
 
 
     class Memory;
-}
+    class CPU;
+};
 
 #endif

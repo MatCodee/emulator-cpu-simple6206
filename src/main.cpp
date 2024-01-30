@@ -7,7 +7,7 @@ using namespace std;
 
 
 void test() {
-    Memory mem;
+    Emulator6502::Memory mem;
 
     /*
     Intrucciones de prueba:
@@ -15,14 +15,13 @@ void test() {
     INS_PHA
     */
 
-    CPU cpu;
+    Emulator6502::CPU cpu;
     cpu.reset(mem);
     cpu.PrintStatus();
     mem[0xFFFC] = INS_LDA_IM;
     mem[0xFFFD] = 0x42;
     cpu.execute(2,mem);
 }
-
 
 
 int main() {
