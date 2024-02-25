@@ -308,6 +308,20 @@ void CPU::execute(u32 cycles,Memory &memory) {
 
 
             // Shifts
+            case INS_ASL: {
+
+            } break;
+
+            case INS_LSR: {
+
+            } break;
+
+            case INS_ROL: {
+
+            } break;
+            case INS_ROR: {
+
+            } break;
             
             //Jumps & Calls
 
@@ -331,9 +345,54 @@ void CPU::execute(u32 cycles,Memory &memory) {
             } break;
 
             // Branches
-            
+            case INS_BEQ: {
+
+            } break;
+            case INS_BNE: {
+
+            } break;
+            case INS_BCS: {
+
+            } break;
+            case INS_BCC: {
+
+            } break;
+            case INS_BMI: {
+
+            } break;
+            case INS_BPL: {
+
+            } break;
+            case INS_BVC: {
+
+            } break;
+            case INS_BVS: {
+
+            } break;
             // Status Flag Changes
-            
+ 
+            case INS_CLC: {
+
+            } break;
+            case INS_SEC: {
+
+            } break;
+            case INS_CLD: {
+
+            } break;
+            case INS_SED: {
+
+            } break;
+            case INS_CLI: {
+
+            } break;
+            case INS_SEI: {
+
+            } break;
+            case INS_CLV: {
+
+            } break;
+
             // System Functions
 
 

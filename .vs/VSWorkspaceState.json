@@ -20,6 +20,6 @@
     "\\src",
     "\\test"
   ],
-  "SelectedNode": "\\include\\cpu.h",
+  "SelectedNode": "\\src\\cpu.cpp",
   "PreviewInSolutionExplorer": false
 }
