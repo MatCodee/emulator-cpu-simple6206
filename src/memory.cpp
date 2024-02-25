@@ -1,6 +1,7 @@
 #include "memory.h"
 
 
+
 void Memory::Initialise() {
     std::fill(Data.begin(),Data.end(),0);
 }

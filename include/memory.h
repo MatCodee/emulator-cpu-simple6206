@@ -8,9 +8,12 @@
 
 #include "types.h"
 
+using namespace Emulator6502;
+
+
 class Emulator6502::Memory {
     public:
-        Memory() : Data(MAX_MEM,0) {}
+        Memory() : Data(MAX_MEM,0) {};
         void Initialise();
 
         std::vector<Byte> getData();

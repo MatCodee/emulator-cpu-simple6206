@@ -31,8 +31,7 @@ class InstructionException : public std::runtime_error {
 class ExceptionHandler : public std::runtime_error {
 	public:	
 		ExceptionHandler::ExceptionHandler(const std::string& message) : std::runtime_error(message) {}
-}
+};
 
 
 #endif // ! EXCEPTION_HANDLER_H
-
