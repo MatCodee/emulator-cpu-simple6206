@@ -6,7 +6,12 @@ void CPU::reset(Memory &memory) {
     programCounter = 0xFFFC;
     stackPointer = 0x0100;
     dm = 0;
-    cf = zf = id = dm = bc = of = 0;
+   
+    // temporal
+    cf = zf = id = dm = bc = of = nf = 0;
+
+    flag.cf = flag.zf = flag.id = flag.dm = flag.bc = flag.of = flag.nf = 0;
+
     A = X = Y = 0;
     memory.Initialise();
 }
@@ -15,6 +20,12 @@ void CPU::reset(Memory &memory) {
 void CPU::PrintStatus() const {
 	printf( "A: %d X: %d Y: %d\n", A, X, Y );
 	printf( "PC: %d SP: %d\n", programCounter, stackPointer);
+}
+
+Byte CPU::fetchInstruction(Memory& memory) {
+    Byte Data = memory[programCounter];
+    programCounter++;
+    return Data;
 }
 
 Byte CPU::fetchByte(u32 &cycles, Memory &memory) {
@@ -28,12 +39,30 @@ Byte CPU::fetchByte(u32 &cycles, Memory &memory) {
 // Analizar la informacion de este contenido no entiendo este proceso de fetchWord
 Word CPU::fetchWord(u32 &cycles, Memory &memory) {
     Word data = memory[programCounter];
-
     programCounter++;
     data |= (memory[programCounter] << 8);
     programCounter++;
     cycles+=2;
     return data;
+}
+
+void CPU::loadValue(u32& cycles,Byte& addrStart, const Byte& addrEnd) {
+    addrStart = addrEnd;
+    cycles--;
+}
+
+void CPU::pushMemoryStack(u32& cycles,const Byte &value, Memory &memory) {
+    memory[stackPointer] = value;
+    cycles--;
+    stackPointer--;
+    cycles--;
+}
+Word CPU::readMemoryStack(u32& cycles, Memory& memory) {
+    Word value = memory[stackPointer];
+    cycles--;
+    stackPointer++;
+    cycles--;
+    return value;
 }
 
 void CPU::writeByteMemory(u32 &cycle,const Byte &address,const Byte &value, Memory& memory) {
@@ -99,25 +128,19 @@ void CPU::SetZeroAndNegativeFlags(Byte &reg) {
 
 void CPU::execute(u32 cycles,Memory &memory) {
     while( cycles > 0 ) {
-        Byte ins = fetchByte( cycles, memory);        
+        Byte ins = fetchInstruction(memory);
         switch (ins) {
             // LOAD/ STORE OPERATIONS
-            // Estableciendo distintos modos de acceso para el LDA
             case INS_LDA_IM: {
                 Byte value = fetchByte(cycles, memory);
-                A = value;
+                loadValue(cycles, A, value);
                 LDASetStatus();
-                PrintStatus();
-                memory.printMemory();
             } break;
-
-            // Aqui hago una comprobacion de lectura
             case INS_LDA_ZP: {
-                Byte zeroPageAddress = fetchByte(cycles, memory);
-                A = readByte( cycles, zeroPageAddress, memory);
+                Byte zeroPageAddress = fetchByte(cycles, memory); 
+                //A = readByte( cycles, zeroPageAddress, memory); 
+                loadValue(cycles, A, readByte(cycles, zeroPageAddress, memory));
                 LDASetStatus();
-                PrintStatus();
-                //memory.printMemory();
             } break;
  
             case INS_LDA_ZPX: {
@@ -125,14 +148,19 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 zeroPageAddressX += X;
                 cycles--;
                 A = readByte(cycles, zeroPageAddressX, memory);
+                cycles--;
                 LDASetStatus();
             } break;
+
+            // GOOD
+
 
             // LDX
             // Estableciendo distintas direccciones de modod de acceso para el LDX
             case INS_LDX_IM: {
                 Byte value = fetchByte(cycles, memory);
                 X = value;
+                cycles--;
                 LDXSetStatusFlags();
             } break;
 
@@ -140,6 +168,7 @@ void CPU::execute(u32 cycles,Memory &memory) {
             case INS_LDY_IM: {
                 Byte value = fetchByte(cycles, memory);
                 Y = value;
+                cycles--;
                 LDXSetStatusFlags();
             } break;
 
@@ -147,13 +176,17 @@ void CPU::execute(u32 cycles,Memory &memory) {
             // Esto es malo verificar pa operacion STA
             case INS_STA_ZP: {
                 Byte zeroPageAddress = fetchByte(cycles, memory);
-                Word address = zeroPageAddress;
+                Word address = zeroPageAddress; 
                 writeByte(A, cycles, address, memory);
+                // falta un ciclo de reloj
+
             } break;
             case INS_STX_ZP: {
                 Byte zeroPageAddress = fetchByte(cycles, memory);
                 Word address = zeroPageAddress;
                 writeByte(X, cycles, address, memory);
+                // falta un ciclo de reloj
+
             } break;
 
             // TODO: Comprobar si esta instruccion esta correcta
@@ -161,109 +194,149 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 Byte zeroPageAddress = fetchByte(cycles, memory);
                 Word address = zeroPageAddress;
                 writeByte(Y, cycles, address, memory);
+                // falta un ciclo de reloj
+
             } break;
 
             // REGISTER TRANSFERS
+
+            // No esta bien implementado los ciclos de reloj
             case INS_TAX: {
                 X = A;
-                cycles--;
+                cycles-=2;
                 TAXSetStatusFlag();
-
             } break;
             case INS_TAY: {
                 Y = A;
-                cycles--;
+                cycles-=2;
                 TAYSetStatusFlag();
             } break;
             case INS_TXA: {
                 A = X;
-                cycles--;
+                cycles-=2;
                 TXASetStatusFlag();
             } break;
             case INS_TYA: {
                 A = Y;
-                cycles--;
+                cycles-=2;
                 TXASetStatusFlag();
             } break;
 
             // STACK OPERATIONS
             case INS_TSX: {
                 X = stackPointer;
+                cycles-=2;
                 TSXSetStatusFlag();
             } break;
             case INS_TXS: {
                 stackPointer = X;
+                cycles-=2;
             } break;
 
             case INS_PHA: {
                 Byte value = A;
-                stackPointer--;
-                memory.PushMemory(value,stackPointer);
-                PrintStatus();
-                memory.printMemory();                
+                cycles--;
+                pushMemoryStack(cycles,value, memory);
+                //PrintStatus();
+                //memory.printMemory();                
             } break;
 
+            // comprobar que se esten argegando los estados de procesor
+            case INS_PHP: {
+                // guardar el PS, o llamado Process State en la memoria
+                Byte value = ps; 
+                cycles--;
+                pushMemoryStack(cycles, value, memory);
+            } break;
             
+            case INS_PLA: {
+                A = readMemoryStack(cycles, memory);
+                cycles--;
+                SetZeroAndNegativeFlags(A);  
+                // parece que falta un ciclo de reloj aqui
+            } return; 
+            case INS_PLP: {
+                // ps = readMemoryStack(cycles, memory);
+                // Actualizar los flags dado la informacion de la memoria
+            } return;
+
             // LOGICAL
 
             case INS_AND_IM: {
                 Byte value = fetchByte(cycles, memory);
                 A &= value;
-                cycles--; //  ver si es necesario restar el cycle
+                cycles-=2; 
                 SetZeroAndNegativeFlags(A);
             } break;
             case INS_EOR_IM: {
                 Byte value = fetchByte(cycles, memory);
                 // XOR
                 A = A ^ value; 
-                cycles--; //  ver si es necesario restar el cycle
+                cycles-=2; 
                 SetZeroAndNegativeFlags(A);
             } break;
             case INS_ORA_IM: {
                 Byte value = fetchByte(cycles, memory);
                 A |= value;
-                cycles--; //  ver si es necesario restar el cycle
+                cycles-=2; 
                 SetZeroAndNegativeFlags(A);
             } break;
             case INS_BIT_ZP: {
                 //Word address = fetchByte(cycles, memory);
                 // TODO: VER COMO FUNCIONA BIEN ESTA INSTRUCCION
+                Byte value = 0b11001010; // ver is este valor cambia la salida o solo valor de transporte e bit
+                Word address = fetchByte(cycles, memory);
+                Byte memory_value = readByte(cycles, address, memory);
+                Byte result = value & memory_value;
+                cycles--;
+                // Esttablecemos las flags
+                nf = (memory_value & 0x80) >> 7;
+                bc = (memory_value & 0x40) >> 6;
             } break;
 
             // Arithmetic
             case INS_ADC: {    
                 Byte value = fetchByte(cycles, memory);
-                
-                
-                Word result = A + value + (carryFlag ? 1 : 0);
+                Word result = A + value + (cf ? 1 : 0);
 
                 // Manejo de Excepciones aqui de INS ADC
 
                 A = result;
-                carryFlag = result > 0xFF;
+                cf = result > 0xFF;
                 cycles--;
             } break;
             case INS_SBC: {
                 Byte value = fetchByte(cycles, memory);
-                Word result = A - value - (carryFlag ? 1 : 0); // no se si esta implementacion esta correcta
-                carryFlag = result > 0xFF;
+                Word result = A - value - (cf ? 1 : 0); // no se si esta implementacion esta correcta
+                cf = result > 0xFF;
                 cycles--;
 
             } break;
             case INS_CMP: {
-                // compare A with memory value
-                /*
+                // compare A with memory value                
                 Byte value = fetchByte(cycles, memory);
-                Byte compare = value & A; // No se si esta implementacion esta correcta
-                carryFlag = result > 0xFF;
+                // Basado en las condiciones es podible establecer las flags
+                Byte result = A - value; // El exito de esta funcion es que est este bien
+                nf = (result & NegativeFlagBit) > 0;
+                zf = A == value;
+                cf = A >= value;
                 cycles--;
-                */
             } break;
             case INS_CPX: {
-
+                Byte value = fetchByte(cycles, memory);
+                Byte result = X - value;
+                nf = (result & NegativeFlagBit) > 0;
+                zf = X == value;
+                cf = X >= value;
+                cycles--;
             } break;
             case INS_CPY: {
-
+                Byte value = fetchByte(cycles, memory);
+                Byte result = Y - value;
+                nf = (result & NegativeFlagBit) > 0;
+                zf = Y == value;
+                cf = Y >= value;
+                cycles--;
             } break;
 
             // Increments & Decrements
@@ -311,11 +384,31 @@ void CPU::execute(u32 cycles,Memory &memory) {
 
             // Shifts
             case INS_ASL: {
-
+                cf = (A & NegativeFlagBit) > 0;
+                Byte result = A << 1;
+                A = result;
+                zf = (A == 0);
+                nf = (result == 0b10000000) > 0;
+                cycles-=2;
             } break;
-
+            case INS_ASL_ZP: {
+                // parece que tengo que escribir en la memoria
+                Byte zeroPageAddress = fetchByte(cycles, memory);
+                Byte value = readByte(cycles, zeroPageAddress, memory);
+                cf = (value & NegativeFlagBit) > 0;
+                Byte result = value << 1;
+                zf = (A == 0);
+                nf = (result == 0b10000000) > 0;
+                cycles-=2;
+                // filtro un ciclo de reloj aqui ver de donde es
+            } break;
             case INS_LSR: {
-
+                cf = (A & ZeroBit) > 0;
+                Byte result = A >> 1;
+                A = result;
+                zf = (result == 0);
+                nf = (result == 0b10000000) > 0;
+                cycles -= 2;
             } break;
 
             case INS_ROL: {
@@ -346,7 +439,7 @@ void CPU::execute(u32 cycles,Memory &memory) {
                 cycles--;
             } break;
 
-            // Branches
+            // Branches (Esto tiene que ver con el procesador de Sattus)
             case INS_BEQ: {
 
             } break;
@@ -356,8 +449,20 @@ void CPU::execute(u32 cycles,Memory &memory) {
             case INS_BCS: {
 
             } break;
+            // No entiendo muy bien este codigo     
             case INS_BCC: {
-
+                if (cf == 0) {
+                    // aplicamos la instruccion
+                    Byte offset = fetchByte(cycles, memory);
+                    const Word pc_old = programCounter;
+                    programCounter += offset;
+                    cycles--;
+                    // si hay una nueva pagina 
+                    const bool pageChanged = (programCounter >> 8) != (pc_old >> 8);
+                    if (pageChanged) {
+                        cycles--;
+                    }
+                }
             } break;
             case INS_BMI: {
 

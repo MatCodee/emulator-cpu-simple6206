@@ -9,7 +9,7 @@ void Memory::Initialise() {
 std::vector<Byte> Memory::getData() { return Data; }
 
 
-// Implementacion de un elemento en la memoria
+// Esta operacion logica no debe estar en la memoria ya que es una unidad de almacenameinto
 void Memory::PushMemory(const Byte &value, Byte &StackPointer) {
     if (Data.size() < MAX_MEM) {
         Data[StackPointer] = value;        
@@ -17,6 +17,8 @@ void Memory::PushMemory(const Byte &value, Byte &StackPointer) {
         std::cerr << "Memory Error" << std::endl;
     }
 }
+
+// Este codigo es el mismo verificar su funcionamiento
 
 /* Lee un byte */
 Byte Memory::operator[](u32 address) const {

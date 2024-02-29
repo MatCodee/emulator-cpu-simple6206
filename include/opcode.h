@@ -1,6 +1,14 @@
 
 using Byte = unsigned char;
 
+static constexpr Byte
+    NegativeFlagBit = 0b10000000,
+    OverflowFlagBit = 0b01000000,
+    BreakFlagBit = 0b000010000,
+    UnusedFlagBit = 0b000100000,
+    InterruptDisableFlagBit = 0b000000100,
+    ZeroBit = 0b00000001;
+
 // opcodes
 
 static constexpr Byte
@@ -52,7 +60,7 @@ static constexpr Byte
 
     INS_TSX = 0xBA,         // DONE T       
     INS_TXS = 0x9A,         // DONE T
-    INS_PHA = 0x48,         
+    INS_PHA = 0x48,         // DONE   
     INS_PLA = 0x68,
     INS_PHP = 0x08,
     INS_PLP = 0x28,
@@ -177,13 +185,13 @@ static constexpr Byte
     INS_CPY_ABS = 0xCC,
 
     // shifts
-    INS_ASL = 0x0A,
+    INS_ASL = 0x0A,             // DONE
     INS_ASL_ZP = 0x06,
     INS_ASL_ZPX = 0x16,
     INS_ASL_ABS = 0x0E,
     INS_ASL_ABSX = 0x1E,
 
-    INS_LSR = 0x4A,
+    INS_LSR = 0x4A,             // DONE
     INS_LSR_ZP = 0x46,
     INS_LSR_ZPX = 0x56,
     INS_LSR_ABS = 0x4E,

@@ -17,6 +17,7 @@ class Emulator6502::Memory {
         void Initialise();
 
         std::vector<Byte> getData();
+        
         // Operaciones
         void PushMemory(const Byte &value,Byte &stackPointer);
         

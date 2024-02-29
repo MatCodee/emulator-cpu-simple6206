@@ -5,7 +5,7 @@
 
 using namespace std;
 
-
+// Simple function 
 void test() {
     Emulator6502::Memory mem;
 

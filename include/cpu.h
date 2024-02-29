@@ -1,20 +1,40 @@
 #ifndef CPU_H
 #define CPU_H
 #include "memory.h"
+#include "types.h"
 
 using namespace Emulator6502;
+
+
+class StatusFlag {
+    public:
+        Byte cf : 1;
+        Byte zf : 1;
+        Byte id : 1;
+        Byte dm : 1;
+        Byte bc : 1;
+        Byte of : 1;
+        Byte nf : 1;
+        Byte Unused : 1;
+};
 
 class Emulator6502::CPU {
     public:
         void reset(Memory &memory);
         void execute(u32 cycles,Memory &memory);
 
+        Byte fetchInstruction(Memory& memory);
         Byte fetchByte(u32 &cycles, Memory &memory);
         Word fetchWord(u32 &cycles, Memory &memory);
+
         Byte readByte(u32 &cycles,const Byte &address,const Memory &memory);
         void writeByte(const Byte &value,u32 &cycles, const Byte &address, Memory &memory);
         
         void writeByteMemory(u32 &cycles, const Byte &address,const Byte &value, Memory &memory);
+        void pushMemoryStack(u32& cycles, const Byte& value, Memory& memory);
+        Word readMemoryStack(u32& cycles, Memory& memory);
+       
+        void loadValue(u32& cycles, Byte& addrStart, const Byte& addrEnd);
 
         // Flags
         void LDASetStatus(); // Establece los estados para un Instruccion LDA
@@ -35,6 +55,11 @@ class Emulator6502::CPU {
 
         bool carryFlag = false;
         
+        union {
+            Byte ps;
+            StatusFlag flag;
+        };
+
         // Status flags 
         Byte cf : 1;
         Byte zf : 1;
