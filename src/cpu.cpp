@@ -42,7 +42,7 @@ Word CPU::fetchWord(u32 &cycles, Memory &memory) {
     programCounter++;
     data |= (memory[programCounter] << 8);
     programCounter++;
-    cycles+=2;
+    cycles-=2;
     return data;
 }
 
@@ -85,14 +85,12 @@ void CPU::writeByte(const Byte &value,u32 &cycles, const Byte &address, Memory &
     cycles--;
 }
 
-/* Escribe 2 bytes */
-/*
-void CPU::writeWord(Word value, u32 cycles, u32 address) {
-    Data[address] = value & 0xFF;
-    Data[addresss + 1] = (value >> 8);   
-    cycles--;
+void CPU::writeWord(Word value, u32& cycles,const u32 address, Memory &memory) {
+    Memory[address] = value & 0xFF;
+    Memory[address+1] = (value >> 8);
+    cycles-=2;
 }
-*/
+
 
 // Funciones que resetean los estados del proceso
 void CPU::LDASetStatus() {
@@ -420,19 +418,27 @@ void CPU::execute(u32 cycles,Memory &memory) {
             
             //Jumps & Calls
 
-            /*
+            
             case INS_RTS: {
                 programCounter = memory[programCounter - 1];
-                // Quitar el ultimo elemento de la direccion 
-            
-            } break;
-            */
-            // No se is esta implementacion esta correcta
-            //
-            case INS_JSR: {
-                Word subAddress = fetchWord(cycles, memory);
+                
 
-                memory[stackPointer] = stackPointer - 1;
+            } break;
+            case INS_JMP_IND: {
+
+            } break;
+            // No se is esta implementacion esta correcta
+            case INS_JSR: {
+                Word subAddress = fetchWord(cycles, memory); // pide una direccion
+                
+                // guardar la ultima posicion de memoria
+
+
+                memory[stackPointer] = stackPointer - 1; // guardamos la direccion de memoria en la memoria especifica del stack pointer
+                // porque cuando se aplica RTS para retornar tambien se va a utilizar un acceso de 16 bits
+
+                
+                // aumento el stack pointer 
                 stackPointer++;
                 cycles--;
                 programCounter = subAddress;

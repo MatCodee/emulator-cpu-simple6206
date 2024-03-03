@@ -36,6 +36,8 @@ class Emulator6502::CPU {
        
         void loadValue(u32& cycles, Byte& addrStart, const Byte& addrEnd);
 
+        void writeWord(Word value, u32& cycles, const u32 address, Memory& memory);
+
         // Flags
         void LDASetStatus(); // Establece los estados para un Instruccion LDA
         void LDXSetStatusFlags();
