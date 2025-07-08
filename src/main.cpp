@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "cpu.h"
 #include "memory.h"
 #include "opcode.h"
@@ -21,6 +22,7 @@ void test() {
     mem[0xFFFC] = INS_LDA_IM;
     mem[0xFFFD] = 0x42;
     cpu.execute(2,mem);
+
 }
 
 

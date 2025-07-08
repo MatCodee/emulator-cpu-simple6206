@@ -1,12 +1,20 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
+project(Emulator6502 LANGUAGES CXX)
 
-project(Project)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_STANDARD 14)
-add_executable(${PROJECT_NAME})
+# 1) Ejecutable principal con sus .cpp
+file(GLOB SRC_FILES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp")
+add_executable(emulator ${SRC_FILES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+# 2) Carpeta de headers
+target_include_directories(emulator
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/include   # <memory.h>, <cpu.h>, <opcode.h>
+)
 
-add_subdirectory(include)
-add_subdirectory(src)
-add_subdirectory(test)
+# 3) (Opcional) tests
+if (EXISTS "${PROJECT_SOURCE_DIR}/test")
+    add_subdirectory(test)
+endif()

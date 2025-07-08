@@ -2,6 +2,8 @@
 #include "cpu.h"
 #include "opcode.h"
 
+using namespace Emulator6502;
+
 void CPU::reset(Memory &memory) {
     programCounter = 0xFFFC;
     stackPointer = 0x0100;
@@ -13,7 +15,7 @@ void CPU::reset(Memory &memory) {
     flag.cf = flag.zf = flag.id = flag.dm = flag.bc = flag.of = flag.nf = 0;
 
     A = X = Y = 0;
-    memory.Initialise();
+    memory.Initialize_memory();
 }
 
 
@@ -86,8 +88,8 @@ void CPU::writeByte(const Byte &value,u32 &cycles, const Byte &address, Memory &
 }
 
 void CPU::writeWord(Word value, u32& cycles,const u32 address, Memory &memory) {
-    Memory[address] = value & 0xFF;
-    Memory[address+1] = (value >> 8);
+    //Memory[address] = value & 0xFF;
+    //Memory[address+1] = (value >> 8);
     cycles-=2;
 }
 

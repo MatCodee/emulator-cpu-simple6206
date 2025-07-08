@@ -1,12 +1,15 @@
+#include <algorithm>
 #include "memory.h"
 
+using namespace Emulator6502;
 
 
-void Memory::Initialise() {
-    std::fill(Data.begin(),Data.end(),0);
+// Inicializa toda la memoria en cero
+void Memory::Initialize_memory() { 
+    std::fill(Data.begin(), Data.end(),0);
 }
 
-std::vector<Byte> Memory::getData() { return Data; }
+const std::vector<Byte>& Memory::getData() const { return Data; }
 
 
 // Esta operacion logica no debe estar en la memoria ya que es una unidad de almacenameinto

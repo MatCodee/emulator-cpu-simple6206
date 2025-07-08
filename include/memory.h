@@ -8,28 +8,28 @@
 
 #include "types.h"
 
-using namespace Emulator6502;
+namespace Emulator6502 {
+
+    class Memory {
+        public:
+            Memory() : Data(MAX_MEM,0) {};
+            void Initialize_memory();
+
+            const std::vector<Byte> &getData() const;
+            
+            void PushMemory(const Byte &value,Byte &stackPointer);
+            Byte operator[](u32 address) const;
+            Byte& operator[](u32 address);
+            
+            void printMemory() const;
+        private:
+            static constexpr u32 MAX_MEM = 1024 * 64; 
+            std::vector<Byte> Data;
+    };
+
+}
 
 
-class Emulator6502::Memory {
-    public:
-        Memory() : Data(MAX_MEM,0) {};
-        void Initialise();
 
-        std::vector<Byte> getData();
-        
-        // Operaciones
-        void PushMemory(const Byte &value,Byte &stackPointer);
-        
-        // Operadores
-        Byte operator[](u32 address) const;
-        Byte& operator[](u32 address);
-
-
-        void printMemory() const;
-    private:
-        static constexpr u32 MAX_MEM = 1024 * 64; 
-        std::vector<Byte> Data;
-};
 
 #endif // MEMORY_H

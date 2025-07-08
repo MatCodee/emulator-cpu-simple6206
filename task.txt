@@ -1,0 +1,8 @@
+No tengo tanta prisa en terminar este proyecto pero si quiero seguir avanzando en este:
+
+vamos a priorizar lo que es la correcta implementacion de las instrucciones
+objetivos:
+todo: 
+- Implementar al menos una instruccion a la semana
+- Implementar al menos un testeo a la semana
+

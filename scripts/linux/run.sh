@@ -1,7 +1,6 @@
 #!/bin/bash
 
-cd ..
-cd ..
+cd ../../
 current_dir=$(pwd)
 
 
@@ -14,7 +13,7 @@ if [ -d "$build_dir" ]; then
         echo $build_dir
         ./Project 
     else
-        echo "El archivo main.exe no se encontró."
+        echo "El archivo ejecutable no se encontró."
     fi
 
     # Volver al directorio original
