@@ -1,4 +1,4 @@
-### emulator-cpu-simple6506
+### emulator-cpu-simple6502
 
 # Este es un simple emulador de la cpu 6502 en C++
 El objetivo de este codigo es aprender a construir un emulador de un cpu en este caso me enfoque en 6506 porque tiene pocos registros.
